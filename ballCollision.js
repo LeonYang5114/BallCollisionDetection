@@ -27,9 +27,9 @@ function BallManager(updateInterval/*, gridSize*/) {
 	//this.grids = [[]];
 	this.ballsMoveTime = [];
 	this.sortedCollPairs = [];
-	//for (let i = 0; i < BallManager.width/gridSize; i++) {
+	//for (var i = 0; i < BallManager.width/gridSize; i++) {
 	//	this.grids[i] = [];
-	//	for (let j = 0; j < BallManager.height/gridSize; j++) {
+	//	for (var j = 0; j < BallManager.height/gridSize; j++) {
 	//		this.grids[i][j] = [];
 	//	}
 	//}
@@ -60,14 +60,14 @@ BallManager.prototype.collisionTime = function(b1, b2, timeLag/*, areNeighbors*/
 	
 	// asking for collision time with walls
 	if (b2 == BallManager.vertical) {
-		let result = this.updateInterval;
+		var result = this.updateInterval;
 		if (b1.vx < 0)
 			result = Math.min(result, (b1.x-b1.r)/-b1.vx);
 		else if (b1.vx > 0) 
 			result = Math.min(result, (BallManager.width-b1.x-b1.r)/b1.vx);
 		return result;
 	} else if (b2 == BallManager.horizontal) {
-		let result = this.updateInterval;
+		var result = this.updateInterval;
 		if (b1.vy < 0) 
 			result = Math.min(result, (b1.y-b1.r)/-b1.vy);
 		else if (b1.vy > 0) 
@@ -77,25 +77,25 @@ BallManager.prototype.collisionTime = function(b1, b2, timeLag/*, areNeighbors*/
 	//allCalls++;
 	
 	// timeLag is the time b1 ball lags the other ball
-	let relX = b2.x-b1.x-timeLag*((timeLag>0)?b1.vx:b2.vx);
-	let relY = b2.y-b1.y-timeLag*((timeLag>0)?b1.vy:b2.vy);
+	var relX = b2.x-b1.x-timeLag*((timeLag>0)?b1.vx:b2.vx);
+	var relY = b2.y-b1.y-timeLag*((timeLag>0)?b1.vy:b2.vy);
 	
-	let relVx = b1.vx-b2.vx;
-	let relVy = b1.vy-b2.vy;
+	var relVx = b1.vx-b2.vx;
+	var relVy = b1.vy-b2.vy;
 	
 	// sqr(relX-t*relVx)+sqr(relY-t*relVy)=sqr(r1+r2)	
 	
-	let b = -2*(relX*relVx+relY*relVy);
+	var b = -2*(relX*relVx+relY*relVy);
 	// negative t
 	if (b >= 0) {
 		//blockedByB++;
 		return this.updateInterval;
 	}
 	
-	//let isBlockedByBC = false;
+	//var isBlockedByBC = false;
 	
 	// make sure that c is greater than 0
-	let c = relX*relX+relY*relY-(b1.r+b2.r)*(b1.r+b2.r);
+	var c = relX*relX+relY*relY-(b1.r+b2.r)*(b1.r+b2.r);
 	//if (c < 0)
 	//	console.log(c);
 	
@@ -109,16 +109,16 @@ BallManager.prototype.collisionTime = function(b1, b2, timeLag/*, areNeighbors*/
 		return this.updateInterval;
 	}
 	
-	let a = relVx*relVx + relVy*relVy;
+	var a = relVx*relVx + relVy*relVy;
 	
-	let delta = b*b-4*a*c;
+	var delta = b*b-4*a*c;
 	if (delta < 0) {
 		//blockedByDelta++;
 		return this.updateInterval;
 	}
 	
 	// return the time when the two b1.balls meet instead of leaving
-	let result = (-b-Math.sqrt(delta))/(2*a)+((timeLag>0)?timeLag:0);
+	var result = (-b-Math.sqrt(delta))/(2*a)+((timeLag>0)?timeLag:0);
 	if (result > this.updateInterval) {
 		return this.updateInterval;
 		//notBlocked++;
@@ -129,18 +129,18 @@ BallManager.prototype.collisionTime = function(b1, b2, timeLag/*, areNeighbors*/
 };
 	
 BallManager.prototype.move = function(aBall, time) {
-	//let preGridX = aBall.gridX;
-	//let preGridY = aBall.gridY;
+	//var preGridX = aBall.gridX;
+	//var preGridY = aBall.gridY;
 	aBall.x += time*aBall.vx;
 	aBall.y += time*aBall.vy;
-	//let gridX = Math.floor(aBall.x/this.gridSize);
-	//let gridY = Math.floor(aBall.y/this.gridSize);
+	//var gridX = Math.floor(aBall.x/this.gridSize);
+	//var gridY = Math.floor(aBall.y/this.gridSize);
 	//if (gridX > this.grids.length || gridY > this.grids[0].length)
 	//	console.log(gridX, gridY);
 	//if (gridX != preGridX || gridY != preGridY) {
 	//	aBall.gridX = gridX;
 	//	aBall.gridY = gridY;
-	//	for (let i = 0; i < this.grids[preGridX][preGridY].length; i++) {
+	//	for (var i = 0; i < this.grids[preGridX][preGridY].length; i++) {
 	//		if (this.grids[preGridX][preGridY][i] == aBall) {
 	//			this.grids[preGridX][preGridY].splice(i, 1);
 	//			break;
@@ -192,22 +192,22 @@ BallManager.prototype.collide = function(b1, b2) {
 	// velocity components perpendicular to the line through both center will not change
 	// velocity components on that line will change depending on the respective momentum
 	
-	let distance = b1.r + b2.r;
+	var distance = b1.r + b2.r;
 	//if (distance - b1.r - b2.r != 0)
 	//	console.log(distance - b1.r - b2.r);
-	let c = (b2.x-b1.x)/distance;
-	let s = (b2.y-b1.y)/distance;
-	let m1 = b1.mass;
-	let m2 = b2.mass;
+	var c = (b2.x-b1.x)/distance;
+	var s = (b2.y-b1.y)/distance;
+	var m1 = b1.mass;
+	var m2 = b2.mass;
 	
-	let perpComp1 = b1.vy*c-b1.vx*s;
-	let perpComp2 = b2.vy*c-b2.vx*s;
+	var perpComp1 = b1.vy*c-b1.vx*s;
+	var perpComp2 = b2.vy*c-b2.vx*s;
 	
-	let paraComp1 = b1.vy*s+b1.vx*c;
-	let paraComp2 = b2.vy*s+b2.vx*c;
+	var paraComp1 = b1.vy*s+b1.vx*c;
+	var paraComp2 = b2.vy*s+b2.vx*c;
 	
-	let newParaComp1 = (m2*(2*paraComp2-paraComp1)+m1*paraComp1)/(m1+m2);
-	let newParaComp2 = (m1*(2*paraComp1-paraComp2)+m2*paraComp2)/(m1+m2);
+	var newParaComp1 = (m2*(2*paraComp2-paraComp1)+m1*paraComp1)/(m1+m2);
+	var newParaComp2 = (m1*(2*paraComp1-paraComp2)+m2*paraComp2)/(m1+m2);
 	b1.vx = -perpComp1*s+newParaComp1*c;
 	b1.vy = perpComp1*c+newParaComp1*s;
 	b2.vx = -perpComp2*s+newParaComp2*c;
@@ -234,15 +234,15 @@ function insertToSorted(sorted, element, max, compFunc) {
 		sorted.push(element);
 		return;
 	}		
-	let start = 0;
-	let end = sorted.length;
+	var start = 0;
+	var end = sorted.length;
 	while(true) {
 		if (end == start) {
 			sorted.splice(end, 0, element);
 			return;
 		}
-		let mid = Math.floor((start+end)/2);
-		let relative = compFunc(element, sorted[mid]);
+		var mid = Math.floor((start+end)/2);
+		var relative = compFunc(element, sorted[mid]);
 		if (relative == 0) {
 			sorted.splice(mid, 0, element);
 			return;
@@ -256,32 +256,32 @@ function insertToSorted(sorted, element, max, compFunc) {
 
 BallManager.prototype.moveBalls = function() {
 	// the time that each ball has moved in this interval
-	let max = new CollPair(null, null, this.updateInterval);
-	let timePass = this.ballsMoveTime;
-	let collPairs = this.sortedCollPairs;
+	var max = new CollPair(null, null, this.updateInterval);
+	var timePass = this.ballsMoveTime;
+	var collPairs = this.sortedCollPairs;
 	if (collPairs.length == 0) {
-		for (let i = 0; i < this.balls.length; i++) {
-			let b1 = this.balls[i];
+		for (var i = 0; i < this.balls.length; i++) {
+			var b1 = this.balls[i];
 			timePass[b1.id] = 0;
-			let collHorizontal = this.collisionTime(b1, BallManager.horizontal);
-			let collVertical = this.collisionTime(b1, BallManager.vertical);
+			var collHorizontal = this.collisionTime(b1, BallManager.horizontal);
+			var collVertical = this.collisionTime(b1, BallManager.vertical);
 			insertToSorted(collPairs, new CollPair(b1, BallManager.horizontal, collHorizontal), max, CollPair.compare);
 			insertToSorted(collPairs, new CollPair(b1, BallManager.vertical, collVertical), max, CollPair.compare);
-			for (let j = i + 1; j < this.balls.length; j++) {
-				let b2 = this.balls[j];
-				let collTime = this.collisionTime(b1, b2, 0);
-				let cp = new CollPair(b1, b2, collTime);
+			for (var j = i + 1; j < this.balls.length; j++) {
+				var b2 = this.balls[j];
+				var collTime = this.collisionTime(b1, b2, 0);
+				var cp = new CollPair(b1, b2, collTime);
 				insertToSorted(collPairs, cp, max, CollPair.compare);
 			}
 		}
 	} else {
-		for (let i of collPairs) {
-			i.time = this.collisionTime(i.b1, i.b2, 0);
+		for (var i = 0; i < collPairs.length; i++) {
+			collPairs[i].time = this.collisionTime(collPairs[i].b1, collPairs[i].b2, 0);
 		}
 		collPairs.sort(CollPair.compare);
 	}
 	
-	let cp = collPairs[0];
+	var cp = collPairs[0];
 	while (cp.time < this.updateInterval) {
 		
 		this.move(cp.b1, cp.time-timePass[cp.b1.id]);
@@ -292,9 +292,9 @@ BallManager.prototype.moveBalls = function() {
 		}
 		this.collide(cp.b1, cp.b2);
 		
-		let modifiedPairs = [];
-		for(let i = 0; i < collPairs.length; i++) {
-			let currPair = collPairs[i];
+		var modifiedPairs = [];
+		for(var i = 0; i < collPairs.length; i++) {
+			var currPair = collPairs[i];
 			if (cp.b2 instanceof Ball) {
 				if (currPair.b1 != cp.b1 && currPair.b1 != cp.b2 && currPair.b2 != cp.b1 && currPair.b2 != cp.b2)
 					continue;
@@ -305,8 +305,8 @@ BallManager.prototype.moveBalls = function() {
 			
 			//if (!this.areNeighbors(currPair.b1, currPair.b2))
 			//	continue;
-			let currLag = ((currPair.b2 == null)?0:(timePass[currPair.b2.id]) - timePass[currPair.b1.id]);
-			let newTime = Math.min(this.updateInterval, timePass[currPair.b1.id] + this.collisionTime(currPair.b1, currPair.b2, currLag/*, true*/));
+			var currLag = ((currPair.b2 == null)?0:(timePass[currPair.b2.id]) - timePass[currPair.b1.id]);
+			var newTime = Math.min(this.updateInterval, timePass[currPair.b1.id] + this.collisionTime(currPair.b1, currPair.b2, currLag/*, true*/));
 			if (newTime != currPair.time) {
 				currPair.time = newTime;
 				modifiedPairs.push(currPair);
@@ -314,23 +314,23 @@ BallManager.prototype.moveBalls = function() {
 			}
 		}
 		
-		let count = 0;
-		for (let i of collPairs) {
-			if (i){
-				collPairs[count] = i;
+		var count = 0;
+		for (var i = 0; i < collPairs.length; i++) {
+			if (collPairs[i]){
+				collPairs[count] = collPairs[i];
 				count++;
 			}
 		}
 		collPairs.splice(count, collPairs.length-count);
 		
-		for (let i of modifiedPairs) {
-			insertToSorted(collPairs, i, max, CollPair.compare);
+		for (var i = 0; i < modifiedPairs.length; i++) {
+			insertToSorted(collPairs, modifiedPairs[i], max, CollPair.compare);
 		}
 		
 		cp = collPairs[0];
 	}
 	
-	for (let i = 0; i < this.balls.length; i++) {
+	for (var i = 0; i < this.balls.length; i++) {
 		if (timePass[i] != this.updateInterval) {
 			this.move(this.balls[i], this.updateInterval-timePass[i]);
 		} else 
