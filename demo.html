@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta content="author" value="Leon Yang">
+<title>High Precision Ball Collision Detection-Demo</title>
+<script type="text/javascript" src="demo.js"></script>
+<script type="text/javascript" src="ballCollision.js"></script>
+</head>
+
+<body>
+	<div style="relative">
+		<canvas id="canvas" width="512" height="512">
+			Your browser does not support HTML5 canvas element.
+		</canvas>		
+		<div style="position:absolute; left:10px; top:10px; color:black">Time: <span id="time">0</span></div>
+	</div>
+	<div>
+		<button id="reset">Reset</button>
+		<button id="start_anim">Start Animation</button>
+		<button id="pause">Pause</button>
+		<input id="pause_to_match" type="checkbox" checked><label for="pause_to_match">Pause to Match</label></input>
+	</div>
+	<div>
+		<p>
+		- Reset: reset the balls to their original positions and velocities. (notice that freshing the page will generate a random set of balls!)<br/>
+		- Start Animation: start the animation if the canvas is currently paused.<br/>
+		- Pause: you can pause at any time! but that might not be very helpful if you want to see if ball sets with different update intervals will match.<br/>
+		- Pause to Match: If checked, the canvas will pause every time all ball sets have updated the same number of time units. They are suppose to match with each other!<br/>
+			<p>
+			Currently there are three ball sets with interval 20, 200, and 2000 "time units." It just means that the last set predicts where the balls will be 
+			after the first set has updated 100 times. The algorithm works fine for the first 10000 time units, but after that, some tiny mismatches rampant into total chaos. 
+			What a bufferfly effect! The reason for that is not clear. I think the algorithm should not to be blamed for, since many assumptions are verified (i.e. every 
+			collision happens when two ball's distance exactly equals to their sum of radius). It might be that the float point numbers have rounding errors which build up
+			to big ones. It will be great if anyone have a good idea to check that.</p>
+			<p>
+			The collision algorithm does not use grids for optimization, which is actually suggested by so many people online. However, grids is not reliable for high 
+			precision collision detection, since it does not take into account the velocities of the balls, which would lead to big mistake if the update interval is big.</p>
+			<p>
+			Instead, my algorithm use a very simple way to "filter" those unnecessary calls for checking collision time. As we know, finding the collision time of two given 
+			balls is actually <a href="http://garethrees.org/2009/02/17/physics/">solving a quadratic function</a>. Since we know the signs of the three coefficients: coef_a 
+			is always positive (square of their relative speed), coef_b always negative (so that the collision time is always positive), and coef_c always non-negative (
+			related to the "gap" between the two balls). If the mathematics here is not so intuitive and you are so interested in it, I will be happy to explain more. But 
+			the most interesting part is (which I haven't seen anyone mentioned before), knowing the shape of that quadratic function on the coordinate, we know that 
+			the tangent line at its intersect with the y-axis must intersect with the x-axis to the very left of the smaller root (the one we want). And since the 
+			parabola is usually very flat (small coef_a), that intersect of the tangent line would be a great estimation. Guess what is the expression for that 
+			intersection? Just -coef_c/coef_b! Not time consuming at all and can efficiently filter out any pair of balls that would not potentially collide in the given 
+			update interval. And this is solid reliable! (although not working well for large update interval. but anyway, not optimization works in that case).</p>
+			<p>
+			As usual, the code is not very well documented, which I expressed my high apology. I am trying to do better. If you are interested, please recommend this 
+			to your friends or contact me if you have any idea to share!</p>
+		</p>
+	</div>			
+</body>
+</html>
